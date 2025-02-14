@@ -1,28 +1,37 @@
 package main
 
 import (
-	"net/http"
+	"log"
 	"pet-project/internal/database"
 	"pet-project/internal/handlers"
 	"pet-project/internal/taskService"
+	"pet-project/internal/web/tasks"
 
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-    database.InitDB()
- //   database.DB.AutoMigrate(&taskService.Task{})
+	database.InitDB()
+	database.DB.AutoMigrate(&taskService.Task{})
 
-    repo := taskService.NewTaskRepository(database.DB)
-    service := taskService.NewService(repo)
+	repo := taskService.NewTaskRepository(database.DB)
+	service := taskService.NewService(repo)
 
-    handler := handlers.NewHandler(service)
+	handler := handlers.NewHandler(service)
+	
+	// Инициализируем echo
+	e := echo.New()
+	
+	// используем Logger и Recover
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	
+	// Прикол для работы в echo. Передаем и регистрируем хендлер в echo
+	strictHandler := tasks.NewStrictHandler(handler, nil) // тут будет ошибка
+	tasks.RegisterHandlers(e, strictHandler)
 
-    router := mux.NewRouter()
-    router.HandleFunc("/api/tasks", handler.GetTaskHandler).Methods("GET")
-    router.HandleFunc("/api/tasks", handler.PostTaskHandler).Methods("POST")
-    router.HandleFunc("/api/tasks/{id}", handler.PatchTaskHandler).Methods("PATCH")
-    router.HandleFunc("/api/tasks/{id}", handler.DeleteTaskHandler).Methods("DELETE")
-
-    http.ListenAndServe(":8080", router)
+	if err := e.Start(":8080"); err != nil {
+		log.Fatalf("failed to start with err: %v", err)
+	}
 }

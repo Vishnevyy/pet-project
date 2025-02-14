@@ -41,7 +41,6 @@ func (r *taskRepository) UpdateTaskByID(id uint, task *Task) (*Task, error) {
     }
 
     existingTask.Title = task.Title
-    existingTask.Description = task.Description
     existingTask.Completed = task.Completed
 
     if err := r.db.Save(&existingTask).Error; err != nil {
