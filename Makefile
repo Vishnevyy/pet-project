@@ -33,6 +33,7 @@ gen:
 deps:
 	go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
 # Проверка синтаксиса OpenAPI-спецификации
 validate-openapi:
@@ -41,6 +42,10 @@ validate-openapi:
 # Очистка сгенерированных файлов
 clean:
 	rm -f ./internal/web/tasks/api.gen.go
+
+# Линтинг кода
+lint:
+	golangci-lint run --out-format=colored-line-number
 
 # Помощь (список всех команд)
 help:
@@ -53,4 +58,5 @@ help:
 	@echo "  make deps                             - Установить зависимости"
 	@echo "  make validate-openapi                 - Проверить синтаксис OpenAPI-спецификации"
 	@echo "  make clean                            - Очистить сгенерированные файлы"
+	@echo "  make lint                             - Запустить статический анализ кода"
 	@echo "  make help                             - Показать эту справку"
