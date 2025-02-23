@@ -20,44 +20,44 @@ func NewTaskRepository(db *gorm.DB) TaskRepository {
 }
 
 func (r *taskRepository) CreateTask(task *Task) (*Task, error) {
-    if err := r.db.Create(task).Error; err != nil {
-        return nil, err
-    }
-    return task, nil
+	if err := r.db.Create(task).Error; err != nil {
+		return nil, err
+	}
+	return task, nil
 }
 
 func (r *taskRepository) GetAllTask() ([]Task, error) {
 	var tasks []Task
 	if err := r.db.Find(&tasks).Error; err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 	return tasks, nil
 }
 
 func (r *taskRepository) UpdateTaskByID(id uint, task *Task) (*Task, error) {
-    var existingTask Task
-    if err := r.db.First(&existingTask, id).Error; err != nil {
-        return nil, err
-    }
+	var existingTask Task
+	if err := r.db.First(&existingTask, id).Error; err != nil {
+		return nil, err
+	}
 
-    existingTask.Title = task.Title
-    existingTask.Completed = task.Completed
+	existingTask.Title = task.Title
+	existingTask.Completed = task.Completed
 
-    if err := r.db.Save(&existingTask).Error; err != nil {
-        return nil, err
-    }
+	if err := r.db.Save(&existingTask).Error; err != nil {
+		return nil, err
+	}
 
-    return &existingTask, nil
+	return &existingTask, nil
 }
 
 func (r *taskRepository) DeleteTaskByID(id uint) error {
-    var task Task
-    if err := r.db.First(&task, id).Error; err != nil {
-        return err
-    }
+	var task Task
+	if err := r.db.First(&task, id).Error; err != nil {
+		return err
+	}
 
-    if err := r.db.Delete(&task).Error; err != nil {
-        return err
-    }
-    return nil
+	if err := r.db.Delete(&task).Error; err != nil {
+		return err
+	}
+	return nil
 }

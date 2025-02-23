@@ -16,23 +16,23 @@ import (
 
 // Task defines model for Task.
 type Task struct {
+	// Completed Indicates whether the task is completed.
+	Completed bool `json:"completed"`
+
 	// Id Unique identifier for the task (positive integer).
 	Id *int64 `json:"id,omitempty"`
 
-	// IsDone Indicates whether the task is completed.
-	IsDone bool `json:"is_done"`
-
-	// Task Description of the task.
-	Task string `json:"task"`
+	// Title Description of the task.
+	Title string `json:"title"`
 }
 
 // TaskUpdate defines model for TaskUpdate.
 type TaskUpdate struct {
-	// IsDone Updated status of the task.
-	IsDone *bool `json:"is_done,omitempty"`
+	// Completed Updated status of the task.
+	Completed *bool `json:"completed,omitempty"`
 
-	// Task Updated description of the task.
-	Task *string `json:"task,omitempty"`
+	// Title Updated description of the task.
+	Title *string `json:"title,omitempty"`
 }
 
 // PostTasksJSONRequestBody defines body for PostTasks for application/json ContentType.
@@ -178,6 +178,14 @@ func (response PostTasks201JSONResponse) VisitPostTasksResponse(w http.ResponseW
 	w.WriteHeader(201)
 
 	return json.NewEncoder(w).Encode(response)
+}
+
+type PostTasks400Response struct {
+}
+
+func (response PostTasks400Response) VisitPostTasksResponse(w http.ResponseWriter) error {
+	w.WriteHeader(400)
+	return nil
 }
 
 type DeleteTasksIdRequestObject struct {
