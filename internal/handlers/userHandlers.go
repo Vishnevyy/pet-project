@@ -26,11 +26,10 @@ func (h *UserHandler) GetUsers(ctx context.Context, request users.GetUsersReques
 
 	response := users.GetUsers200JSONResponse{}
 	for _, usr := range allUsers {
-		user := users.User{
-			Id:    new(int64),
+		user := users.UserResponse{
+			Id:    int64(usr.ID),
 			Email: types.Email(usr.Email),
 		}
-		*user.Id = int64(usr.ID)
 		response = append(response, user)
 	}
 
@@ -54,10 +53,9 @@ func (h *UserHandler) PostUsers(ctx context.Context, request users.PostUsersRequ
 	}
 
 	response := users.PostUsers201JSONResponse{
-		Id:    new(int64),
+		Id:    int64(createdUser.ID),
 		Email: types.Email(createdUser.Email),
 	}
-	*response.Id = int64(createdUser.ID)
 
 	return response, nil
 }
@@ -77,10 +75,9 @@ func (h *UserHandler) PatchUsersId(ctx context.Context, request users.PatchUsers
 	}
 
 	response := users.PatchUsersId200JSONResponse{
-		Id:    new(int64),
+		Id:    int64(updatedUser.ID),
 		Email: types.Email(updatedUser.Email),
 	}
-	*response.Id = int64(updatedUser.ID)
 
 	return response, nil
 }

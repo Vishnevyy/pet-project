@@ -15,20 +15,26 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
-// User defines model for User.
-type User struct {
+// UserRequest defines model for UserRequest.
+type UserRequest struct {
 	// Email Email of the user.
 	Email openapi_types.Email `json:"email"`
-
-	// Id Unique identifier for the user (positive integer).
-	Id *int64 `json:"id,omitempty"`
 
 	// Password Password of the user.
 	Password string `json:"password"`
 }
 
-// UserUpdate defines model for UserUpdate.
-type UserUpdate struct {
+// UserResponse defines model for UserResponse.
+type UserResponse struct {
+	// Email Email of the user.
+	Email openapi_types.Email `json:"email"`
+
+	// Id Unique identifier for the user (positive integer).
+	Id int64 `json:"id"`
+}
+
+// UserUpdateRequest defines model for UserUpdateRequest.
+type UserUpdateRequest struct {
 	// Email Updated email of the user.
 	Email *openapi_types.Email `json:"email,omitempty"`
 
@@ -37,10 +43,10 @@ type UserUpdate struct {
 }
 
 // PostUsersJSONRequestBody defines body for PostUsers for application/json ContentType.
-type PostUsersJSONRequestBody = User
+type PostUsersJSONRequestBody = UserRequest
 
 // PatchUsersIdJSONRequestBody defines body for PatchUsersId for application/json ContentType.
-type PatchUsersIdJSONRequestBody = UserUpdate
+type PatchUsersIdJSONRequestBody = UserUpdateRequest
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -155,7 +161,7 @@ type GetUsersResponseObject interface {
 	VisitGetUsersResponse(w http.ResponseWriter) error
 }
 
-type GetUsers200JSONResponse []User
+type GetUsers200JSONResponse []UserResponse
 
 func (response GetUsers200JSONResponse) VisitGetUsersResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -172,7 +178,7 @@ type PostUsersResponseObject interface {
 	VisitPostUsersResponse(w http.ResponseWriter) error
 }
 
-type PostUsers201JSONResponse User
+type PostUsers201JSONResponse UserResponse
 
 func (response PostUsers201JSONResponse) VisitPostUsersResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -222,7 +228,7 @@ type PatchUsersIdResponseObject interface {
 	VisitPatchUsersIdResponse(w http.ResponseWriter) error
 }
 
-type PatchUsersId200JSONResponse User
+type PatchUsersId200JSONResponse UserResponse
 
 func (response PatchUsersId200JSONResponse) VisitPatchUsersIdResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")

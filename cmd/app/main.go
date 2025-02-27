@@ -21,25 +21,28 @@ func main() {
 	}
 
 	taskRepo := taskService.NewTaskRepository(database.DB)
-	taskService := taskService.NewService(taskRepo)
-	taskHandler := handlers.NewHandler(taskService)
+	taskSvc := taskService.NewService(taskRepo)
 
 	userRepo := userService.NewUserRepository(database.DB)
-	userService := userService.NewUserService(userRepo)
-	userHandler := handlers.NewUserHandler(userService)
+	userSvc := userService.NewUserService(userRepo)
+
+	taskHandler := handlers.NewHandler(taskSvc, userSvc)
+	userHandler := handlers.NewUserHandler(userSvc)
 
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
-	strictHandler := tasks.NewStrictHandler(taskHandler, nil)
-	tasks.RegisterHandlers(e, strictHandler)
+	strictTaskHandler := tasks.NewStrictHandler(taskHandler, nil)
+	tasks.RegisterHandlers(e, strictTaskHandler)
 
 	strictUserHandler := users.NewStrictHandler(userHandler, nil)
 	users.RegisterHandlers(e, strictUserHandler)
 
+	log.Println("Starting server on :8080")
 	if err := e.Start(":8080"); err != nil {
-		log.Fatalf("failed to start with err: %v", err)
+		log.Fatalf("failed to start server: %v", err)
 	}
 }

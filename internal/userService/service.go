@@ -1,10 +1,14 @@
 package userService
 
+import "pet-project/internal/taskService"
+
 type UserService interface {
 	CreateUser(user *User) (*User, error)
 	GetAllUsers() ([]User, error)
 	UpdateUserByID(id uint, user *User) (*User, error)
 	DeleteUserByID(id uint) error
+	GetTasksForUser(userID uint) ([]taskService.Task, error)
+	GetUserByID(userID uint) (*User, error)
 }
 
 type userService struct {
@@ -29,4 +33,12 @@ func (s *userService) UpdateUserByID(id uint, user *User) (*User, error) {
 
 func (s *userService) DeleteUserByID(id uint) error {
 	return s.repo.DeleteUserByID(id)
+}
+
+func (s *userService) GetTasksForUser(userID uint) ([]taskService.Task, error) {
+	return s.repo.GetTasksForUser(userID)
+}
+
+func (s *userService) GetUserByID(userID uint) (*User, error) {
+	return s.repo.GetUserByID(userID)
 }
